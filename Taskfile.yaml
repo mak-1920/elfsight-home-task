@@ -1,0 +1,22 @@
+version: '3'
+
+tasks:
+    prod:up:
+        desc: (PRODUCTION) Start application
+        cmds:
+            - docker compose -f compose.yaml up -d --build
+    
+    prod:stop:
+        desc: (PRODUCTION) Stop application
+        cmds:
+            - docker compose -f compose.yaml stop
+            -
+    dev:up:
+        desc: (DEVELOPMENT) Start application
+        cmds:
+            - docker compose -f compose.yaml -f compose.local.yaml up -d --build
+    
+    dev:stop:
+        desc: (DEVELOPMENT) Stop application
+        cmds:
+            - docker compose -f compose.yaml -f compose.local.yaml stop

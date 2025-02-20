@@ -1,0 +1,70 @@
+services:
+    php:
+        container_name: elfsight_php
+        build:
+            dockerfile: ./docker/app/prod.Dockerfile
+            context: ./
+        volumes:
+            - type: bind
+              source: ./
+              target: /var/www/html
+        networks:
+            - elfsight-db-network
+            - elfsight-home-task-network
+        depends_on:
+            - db
+        
+    nginx:
+        container_name: elfsight_nginx
+        image: nginx:${NGINX_VERSION:-1.27.4}
+        ports:
+            - published: 80
+              target: 80
+            - published: 443
+              target: 80
+        volumes:
+            - type: bind
+              source: ./docker/nginx/conf.d
+              target: /etc/nginx/conf.d
+              read_only: true
+            - type: bind
+              source: ./docker/nginx/logs
+              target: /var/log/nginx
+            - type: bind
+              source: ./
+              target: /var/www/html
+        networks:
+            - elfsight-home-task-network
+        depends_on:
+            - php
+        
+    db:
+        container_name: elfsight_db
+        image: postgres:${POSTGRES_VERSION:-17.3}-alpine
+        environment:
+            POSTGRES_DB: ${POSTGRES_DB:-app}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+            POSTGRES_USER: ${POSTGRES_USER:-user}
+        volumes:
+            - type: volume
+              source: pgsql-data
+              target: /var/lib/postgresql/data:rw
+        healthcheck:
+            test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB:-app}", "-U", "${POSTGRES_USER:-user}"]
+            timeout: 5s
+            retries: 5
+            start_period: 60s
+        networks:
+            - elfsight-db-network
+
+networks:
+    elfsight-home-task-network:
+        name: elfsight-home-task-network
+        driver: bridge
+    elfsight-db-network:
+        name: elfsight-db-network
+        driver: bridge
+
+volumes:
+    pgsql-data:
+    
