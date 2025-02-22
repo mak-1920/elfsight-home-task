@@ -10,7 +10,7 @@ tasks:
         desc: (PRODUCTION) Stop application
         cmds:
             - docker compose -f compose.yaml stop
-            -
+            
     dev:up:
         desc: (DEVELOPMENT) Start application
         cmds:
@@ -20,3 +20,59 @@ tasks:
         desc: (DEVELOPMENT) Stop application
         cmds:
             - docker compose -f compose.yaml -f compose.local.yaml stop
+            
+    dev:check:
+        desc: (DEVELOPMENT) Start all checks
+        cmds:
+            - task: code:analyse:psalm
+            - task: code:style:fix
+            - task: doctrine:schema:validation
+            
+    code:analyse:psalm:
+        desc: (DEVELOPMENT) Start Psalm
+        cmds:
+            - vendor/bin/psalm --no-cache
+            
+    code:style:fix:
+        desc: (DEVELOPMENT) Start php-cs-fixer
+        cmds:
+            - vendor/bin/php-cs-fixer fix --allow-risky=yes --verbose
+            
+    doctrine:database:create:
+        desc: (DEVELOPMENT) Create project DB
+        cmds:
+            - task: console
+              vars: { COMMAND: 'doctrine:database:create' }
+            
+    doctrine:schema:validation:
+        desc: (DEVELOPMENT) Is doctrine schema valid?
+        cmds:
+            - task: console
+              vars: { COMMAND: 'doctrine:schema:validate' }
+    
+    doctrine:migrations:diff:
+        desc: (DEVELOPMENT) Generate migration file
+        cmds:
+            - task: console
+              vars: { COMMAND: 'doctrine:migrations:diff' }
+    
+    doctrine:migrations:migrate:
+        desc: (DEVELOPMENT) Execute migrations
+        cmds:
+            - task: console
+              vars: { COMMAND: 'doctrine:migrations:migrate' }
+    
+    console:
+        internal: true
+        requires:
+            vars: [COMMAND]
+        cmds:
+            - task: exec
+              vars: { COMMAND: 'php bin/console {{.COMMAND}}' }
+    
+    exec:
+        internal: true
+        requires:
+            vars: [COMMAND]
+        cmds:
+            - docker compose exec -it php {{.COMMAND}}

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<doctrine-mapping
+        xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+        xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping"
+>
+    <entity name="App\Book\Domain\Model\Comment" table="comments"
+            repository-class="App\Comment\Infrastructure\Repository\Doctrine\CommentRepository">
+        <id name="id" type="integer"/>
+        <field name="authorName" length="255" column="author_name"/>
+        <many-to-one field="episode" inversed-by="comments" target-entity="App\Book\Domain\Model\Episode"/>
+        <field name="score" type="float" column="score" nullable="true"/>
+        <field name="createdAt" type="datetime" column="create_at">
+            <gedmo:timestampable on="create"/>
+        </field>
+    </entity>
+</doctrine-mapping>
