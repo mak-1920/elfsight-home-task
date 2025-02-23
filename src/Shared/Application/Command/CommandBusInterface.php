@@ -6,5 +6,5 @@ namespace App\Shared\Application\Command;
 
 interface CommandBusInterface
 {
-    public function execute($command);
+    public function execute(object $command): mixed;
 }

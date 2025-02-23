@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Book\Infrastructure\Controller;
 
+use App\Book\Application\DTO\CommentDTO;
+use App\Book\Application\DTO\EpisodeDTO;
 use App\Book\Application\UseCase\CreateComment\CreateCommentCommand;
 use App\Book\Application\UseCase\GetEpisode\GetEpisodeCommand;
 use App\Shared\Application\Command\CommandBusInterface;
@@ -43,6 +45,7 @@ class EpisodeController extends BaseController
     public function getEpisode(int $episodeId): JsonResponse
     {
         try {
+            /** @var EpisodeDTO $episode */
             $episode = $this->commandBus->execute(new GetEpisodeCommand($episodeId));
 
             return $this->json($episode);
@@ -94,6 +97,7 @@ class EpisodeController extends BaseController
             $text = $data['text'] ?? '';
             $author = $data['author'] ?? '';
 
+            /** @var CommentDTO $comment */
             $comment = $this->commandBus->execute(
                 new CreateCommentCommand($episodeId, $text, $author)
             );

@@ -21,12 +21,12 @@ class CommandBus implements CommandBusInterface
     /**
      * @throws \Throwable
      */
-    public function execute(mixed $command): mixed
+    public function execute(object $command): mixed
     {
         try {
             return $this->handle($command);
         } catch (HandlerFailedException $exception) {
-            throw $exception->getPrevious();
+            throw $exception->getPrevious() ?? $exception;
         }
     }
 }
