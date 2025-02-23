@@ -7,19 +7,26 @@ use Doctrine\Common\Collections\Collection;
 
 class Episode
 {
-    private ?int $id = null;
+    private int $id;
 
-    private ?string $name = null;
+    private string $name;
 
-    private ?\DateTimeImmutable $airDate = null;
+    private \DateTimeImmutable $airDate;
 
     /** @var Collection<int, Comment> */
     private Collection $comments;
 
+    private float $avgScore = 0;
+
     public function __construct(
         string $name,
         \DateTimeImmutable $airDate,
+        ?int $id = null,
     ) {
+        if (null !== $id) {
+            $this->id = $id;
+        }
+
         $this->name = $name;
         $this->airDate = $airDate;
 
@@ -42,17 +49,17 @@ class Episode
         return $this;
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function getAirDate(): ?\DateTimeImmutable
+    public function getAirDate(): \DateTimeImmutable
     {
         return $this->airDate;
     }

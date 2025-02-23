@@ -1,9 +1,13 @@
 nelmio_api_doc:
     documentation:
         info:
-            title: My App
-            description: This is an awesome app!
+            title: Elfsight Home Task
             version: 1.0.0
-    areas: # to filter documented areas
+    areas:
         path_patterns:
-            - ^/api(?!/doc$) # Accepts routes under /api except /api/doc
+            - ^/api(?!/doc$)
+    models:
+        names:
+            - { alias: Comment, type: App\Book\Application\DTO\CommentDTO }
+            - { alias: Episode, type: App\Book\Application\DTO\EpisodeDTO }
+            - { alias: Error, type: App\Book\Infrastructure\Model\ErrorResponse }

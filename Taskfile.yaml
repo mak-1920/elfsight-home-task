@@ -14,7 +14,7 @@ tasks:
     dev:up:
         desc: (DEVELOPMENT) Start application
         cmds:
-            - docker compose -f compose.yaml -f compose.local.yaml up -d --build
+            - docker compose -f compose.yaml -f compose.local.yaml --env-file .env.local up -d --build
     
     dev:stop:
         desc: (DEVELOPMENT) Stop application
@@ -27,6 +27,12 @@ tasks:
             - task: code:analyse:psalm
             - task: code:style:fix
             - task: doctrine:schema:validation
+            
+    dev:fixture:load:
+        desc: (DEVELOPMENT) Load fixtures
+        cmds:
+            - task: console
+              vars: { COMMAND: 'doctrine:fixtures:load --group=dev' }
             
     code:analyse:psalm:
         desc: (DEVELOPMENT) Start Psalm

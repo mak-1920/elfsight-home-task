@@ -8,6 +8,13 @@
         findUnusedBaselineEntry="true"
         findUnusedCode="false"
 >
+    <issueHandlers>
+        <PropertyNotSetInConstructor>
+            <errorLevel type="suppress">
+                <file name="src/**/Model/*.php" />
+            </errorLevel>
+        </PropertyNotSetInConstructor>
+    </issueHandlers>
     <projectFiles>
         <directory name="src"/>
         <ignoreFiles>

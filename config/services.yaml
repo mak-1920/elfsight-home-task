@@ -10,6 +10,9 @@ services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        
+        bind:
+            App\Book\Domain\Repository\EpisodeRepositoryInterface: '@book.repository.doctrine.episode'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
@@ -22,6 +25,11 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    
+    _instanceof:
+        App\Shared\Application\Command\CommandHandlerInterface:
+            tags:
+                - { name: messenger.message_handler, bus: command.bus }
         
     gedmo.listener.timestampable:
         class: Gedmo\Timestampable\TimestampableListener
@@ -30,5 +38,18 @@ services:
             - { name: doctrine.event_listener, event: 'onFlush' }
             - { name: doctrine.event_listener, event: 'loadClassMetadata' }
         calls:
-#            - [ setAnnotationReader, [ '@gedmo.mapping.driver.attribute' ] ]
             - [ setClock, [ '@clock' ] ]
+        
+    book.repository.doctrine.episode:
+        class: 'App\Book\Infrastructure\Repository\Doctrine\EpisodeRepository'
+    
+    book.repository.doctrine.api:
+        class: 'App\Book\Infrastructure\Repository\Api\EpisodeRepository'
+        
+    App\Book\Infrastructure\Database\Fixture\EpisodeFixture:
+        arguments:
+            $episodeRepository: '@book.repository.doctrine.api'
+            
+    App\Book\Infrastructure\Service\SentimentAnalysisScoreGetter:
+        arguments:
+            $token: '%env(EDENAI_TOKEN)%'

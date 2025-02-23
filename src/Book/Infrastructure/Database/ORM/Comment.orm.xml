@@ -5,11 +5,14 @@
 >
     <entity name="App\Book\Domain\Model\Comment" table="comments"
             repository-class="App\Comment\Infrastructure\Repository\Doctrine\CommentRepository">
-        <id name="id" type="integer"/>
+        <id name="id" type="integer">
+             <generator strategy="SEQUENCE" />
+        </id>
         <field name="authorName" length="255" column="author_name"/>
+        <field name="text" type="text" column="text"/>
         <many-to-one field="episode" inversed-by="comments" target-entity="App\Book\Domain\Model\Episode"/>
         <field name="score" type="float" column="score" nullable="true"/>
-        <field name="createdAt" type="datetime" column="create_at">
+        <field name="createdAt" type="datetime_immutable" column="create_at">
             <gedmo:timestampable on="create"/>
         </field>
     </entity>

@@ -1,5 +1,12 @@
 book_controllers:
     resource:
         path: ../src/Book/Infrastructure/Controller/
-        namespace: App\Book/Infrastructure/Controller
+        namespace: App\Book\Infrastructure\Controller
     type: attribute
+    name_prefix: api_book_
+    prefix: /api/book
+    
+app.redocly:
+    path: /api/doc
+    methods: GET
+    defaults: { _controller: nelmio_api_doc.controller.redocly }
